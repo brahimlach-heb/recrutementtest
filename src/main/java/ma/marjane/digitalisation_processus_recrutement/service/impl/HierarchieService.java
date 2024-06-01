@@ -52,19 +52,19 @@ public class HierarchieService {
         List<Hierarchie> hierarchies = hierarchieRepository.findByDemandeId(demandeId);
         Collaborateur collaborateur = collaborateurRepository.findById(demandeId).get();
         Utilisateur utilisateur = utilisateurRepository.findByMatricule(collaborateur.getMatricule());
-
         if (utilisateur == null) {
             // Handle the case where the user is not found
             return false;
         }else if (hierarchies.isEmpty()) {
             // Handle the case where the hierarchy is not found
             return false;
-        }else if (hierarchies.get(hierarchies.size() - 1).getMatricule().equals(utilisateur.getMatricule())) {
-            System.out.println("manager marhba");
+        }else if (hierarchies.get(hierarchies.size() - 1).getMatricule().equals(utilisateur.getMatricule()) && !utilisateur.getMatricule().equals(utilisateur.getComex())) {
             // Handle the case where the hierarchy has more than two elements
             Utilisateur manager1 = utilisateurRepository.findByMatricule(utilisateur.getManager1());
+
             hierarchies.get(hierarchies.size() - 1).setStatut("valider");
-            if (manager1 == null) {
+            hierarchieRepository.save(hierarchies.get(hierarchies.size() - 1));
+            if (manager1 != null) {
                 Hierarchie hierarchie = new Hierarchie();
                 hierarchie.setMatricule(manager1.getMatricule());
                 hierarchie.setDemandeId(demandeId);
@@ -80,11 +80,25 @@ public class HierarchieService {
             return true;
         }
         for (Hierarchie hierarchie : hierarchies) {
+            if (utilisateur.getMatricule().equals((utilisateur.getComex())) && hierarchie.getStatut().equals("En cours")) {
+                hierarchie.setStatut("valider");
+                hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
+                hierarchieRepository.save(hierarchie);
+                Hierarchie hierarchie1 = new Hierarchie();
+                hierarchie1.setDemandeId(demandeId);
+                hierarchie1.setMatricule("RH");
+                hierarchie1.setStatut("En cours");
+                hierarchie1.setPrenom("");
+                hierarchie1.setNom("RH");
+                hierarchie1.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
+                hierarchieRepository.save(hierarchie1);
+                return true;
+            }
             if (utilisateur.getMatricule().equals(matricule) && hierarchie.getStatut().equals("En cours")) {
 
                 // Handle the case where the hierarchy has more than two elements
                 Utilisateur manager1 = utilisateurRepository.findByMatricule(utilisateur.getManager1());
-                System.out.println("manager marhba"+manager1.getMatricule());
+
                 hierarchie.setStatut("valider");
                 if (manager1 != null) {
                     Hierarchie hierarchie1 = new Hierarchie();
@@ -101,12 +115,12 @@ public class HierarchieService {
                 }
             } else
             if (utilisateur.getMail().equals("labarar@marjane.ma") && hierarchie.getStatut().equals("En cours") && hierarchie.getMatricule().equals(matricule)){
-                hierarchie.setStatut("valideRH");
+                hierarchie.setStatut("valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
                 hierarchieRepository.save(hierarchie);
                 return true;
             } else if (hierarchie.getStatut().equals("En cours") && utilisateur.getManager1().equals(matricule)) {
-                hierarchie.setStatut("ValiderDirecteur");
+                hierarchie.setStatut("Valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
                 hierarchieRepository.save(hierarchie);
                 String managerMatricule = utilisateur.getManager2();
@@ -129,7 +143,7 @@ public class HierarchieService {
                 Utilisateur manager = utilisateurRepository.findByMatricule(managerMatricule);
 
                 if (manager != null && manager.getMail().equals(utilisateurRepository.findByMatricule(utilisateur.getComex()).getMail())){
-                    hierarchie.setStatut("ValiderAdjoint");
+                    hierarchie.setStatut("Valider");
                     hierarchieRepository.save(hierarchie);
                     Hierarchie hierarchie1 = new Hierarchie();
                     hierarchie1.setDemandeId(demandeId);
@@ -142,7 +156,7 @@ public class HierarchieService {
 
                 }
                 else {
-                    hierarchie.setStatut("ValiderAdjoint");
+                    hierarchie.setStatut("Valider");
                     hierarchieRepository.save(hierarchie);
                     String managerMatricule1 = utilisateur.getComex();
                     Utilisateur manager1 = utilisateurRepository.findByMatricule(managerMatricule1);
@@ -160,7 +174,7 @@ public class HierarchieService {
                 }
                 return true;
             }else if (hierarchie.getStatut().equals("En cours") && utilisateur.getComex().equals(matricule)){
-                hierarchie.setStatut("ValiderComex");
+                hierarchie.setStatut("Valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
                 hierarchieRepository.save(hierarchie);
                 Hierarchie hierarchie1 = new Hierarchie();
@@ -179,7 +193,7 @@ public class HierarchieService {
                 hierarchie.setMatricule(listRH.getMatricule());
                 hierarchie.setNom(listRH.getNom());
                 hierarchie.setPrenom(listRH.getPrenom());
-                hierarchie.setStatut("ValiderRH");
+                hierarchie.setStatut("Valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
                 hierarchieRepository.save(hierarchie);
                 return true;
@@ -254,17 +268,35 @@ public class HierarchieService {
 //            return null;
 //        }
 //    }
+    public List<HierarchieDTO> getHierarchieByDemandeId(UUID demandeId) {
+        List<Hierarchie> hierarchies = hierarchieRepository.findByDemandeId(demandeId);
+        return hierarchies.stream()
+                .map(hierarchieMapper::convertToDto)
+                .collect(Collectors.toList());
+    }
+
+
 
     public List<Collaborateur> getdemandes(String matricule) {
         List<Hierarchie> hierarchies = hierarchieRepository.findByMatricule(matricule);
         List<Collaborateur> collaborateurs = new ArrayList<>();
+        ListRH listRH = listRHRepository.findByMatricule(matricule);
+        if (listRH != null){
+            hierarchies = hierarchieRepository.findByMatricule("RH");
+            hierarchies.forEach(hierarchie -> {
+                Optional<Collaborateur> collaborateur = collaborateurRepository.findById(hierarchie.getDemandeId());
+                if (collaborateur.isPresent() && hierarchie.getStatut().equals("En cours")){
+                    collaborateurs.add(collaborateur.get());
+                }
+            });
+            return collaborateurs;
+        }else{
         hierarchies.forEach(hierarchie -> {
             Optional<Collaborateur> collaborateur = collaborateurRepository.findById(hierarchie.getDemandeId());
-            if (collaborateur.isPresent()) {
+            if (collaborateur.isPresent() && hierarchie.getStatut().equals("En cours")){
                 collaborateurs.add(collaborateur.get());
             }
-        });
+        });}
         return collaborateurs;
-
     }
 }

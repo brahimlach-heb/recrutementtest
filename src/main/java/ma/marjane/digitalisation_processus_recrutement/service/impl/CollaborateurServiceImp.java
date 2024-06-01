@@ -26,7 +26,6 @@ public class CollaborateurServiceImp implements CollaborateurService {
     private final UtilisateurRepository utilisateurRepository;
 
     public List<CollaborateurDto> findAll() {
-
         return collaborateurRepository.findByAttributes(true).stream().map(collaborateurMapper::convertToDto).toList();
     }
 
@@ -37,7 +36,24 @@ public class CollaborateurServiceImp implements CollaborateurService {
 
     public CollaborateurDto save(CollaborateurDto collaborateurDto) {
         Collaborateur collaborateur = collaborateurMapper.convertToEntity(collaborateurDto);
+        List<Collaborateur> collaborateurs = collaborateurRepository.findByMatricule(collaborateurDto.getMatricule());
+
         Utilisateur utilisateur= utilisateurRepository.findByMatricule(collaborateurDto.getMatricule());
+        if (utilisateur==null){
+            throw new RuntimeException("Utilisateur with matricule " + collaborateurDto.getMatricule() + " not found");
+        }
+        if (!collaborateur.isAttributes())
+
+        for (Collaborateur collaborateur1 : collaborateurs) {
+            if (collaborateur.isAttributes())
+                break;
+            else if(!collaborateur1.isAttributes())
+                return collaborateurMapper.convertToDto(collaborateur1);
+        }
+        collaborateur=collaborateurRepository.save(collaborateur);
+        System.out.println("collaborateur.getId() = " + collaborateur.getId());
+        System.out.println("collaborateur.getId() = " + collaborateur.isAttributes());
+        if (collaborateur.isAttributes() && collaborateur.getHierarchies().isEmpty() && !utilisateur.getMatricule().equals(utilisateur.getComex())){
         Utilisateur manager1= utilisateurRepository.findByMatricule(utilisateur.getManager1());
         collaborateur.getHierarchies().add(Hierarchie.builder()
                 .demandeId(collaborateur.getId())
@@ -47,7 +63,20 @@ public class CollaborateurServiceImp implements CollaborateurService {
                 .datedecreation(new Date())
                 .statut("En cours")
                 .build());
-        collaborateurRepository.save(collaborateur);
+            collaborateurRepository.save(collaborateur);
+        }
+        else if (utilisateur.getMatricule().equals(utilisateur.getComex())){
+            collaborateur.getHierarchies().add(Hierarchie.builder()
+                    .demandeId(collaborateur.getId())
+                    .matricule("RH")
+                    .nom("RH")
+                    .prenom("")
+                    .datedecreation(new Date())
+                    .statut("En cours")
+                    .build());
+            collaborateurRepository.save(collaborateur);
+        }
+
         return collaborateurDto;
     }
 

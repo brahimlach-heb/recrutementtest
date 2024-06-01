@@ -61,4 +61,11 @@ public class HierarchieController {
         return hierarchieService.refuserdemande(id,matricule, commentaire);
     }
 
+    @GetMapping("/Hierarchie/{demandeId}")
+    public List<HierarchieDTO> getHierarchieByDemandeId(@PathVariable UUID demandeId) {
+        return hierarchieService.getHierarchieByDemandeId(demandeId);
+    }
+
+
+
 }

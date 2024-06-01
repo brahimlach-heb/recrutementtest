@@ -4,7 +4,9 @@ package ma.marjane.digitalisation_processus_recrutement.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import ma.marjane.digitalisation_processus_recrutement.dto.UtilisateurDto;
+import ma.marjane.digitalisation_processus_recrutement.entity.ListRH;
 import ma.marjane.digitalisation_processus_recrutement.entity.Utilisateur;
+import ma.marjane.digitalisation_processus_recrutement.repository.ListRHRepository;
 import ma.marjane.digitalisation_processus_recrutement.repository.UtilisateurRepository;
 import ma.marjane.digitalisation_processus_recrutement.service.impl.UtilisateurServiceImp;
 import org.springframework.http.HttpStatus;
@@ -29,9 +31,10 @@ public class UtilisateurController {
     public UtilisateurDto authenticate(@RequestParam String mail) throws Exception {
         UtilisateurDto utilisateurDTO = utilisateurService.getUserDTOByEmail(mail);
         // Vous pouvez ajouter ici des vérifications ou des traitements supplémentaires si nécessaire
+        ListRH listRH = ListRHRepository.findByMatricule(utilisateurDTO.getMatricule());
         if (utilisateurDTO == null) {
             throw new RuntimeException("Utilisateur non trouvé");
-        }else if (utilisateurDTO.getMail().equals("labarar@marjane.ma") || utilisateurDTO.getMail().equals("ssmouni@marjane.ma")){
+        }else if (listRH != null){
             utilisateurDTO.setRole("RH");
         }
         else
@@ -40,9 +43,8 @@ public class UtilisateurController {
     }
 
     @GetMapping("demandeur/{matricule}")
-    public Utilisateur getDemandeur(@PathVariable String matricule) {
-         return  utilisateurRepository.findByMatricule(matricule);
-
+    public ResponseEntity<Utilisateur> getDemandeur(@PathVariable String matricule) {
+        return utilisateurRepository.findByMatricule(matricule) != null ? ResponseEntity.ok(utilisateurRepository.findByMatricule(matricule)) : ResponseEntity.notFound().build();
     }
 
 }

@@ -11,8 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -51,7 +50,7 @@ public abstract class Demande {
     private String statut = "En cours";
 
     @Column(name = "attributes")
-    private boolean attributes=false;
+    private boolean attributes;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "demande_id")

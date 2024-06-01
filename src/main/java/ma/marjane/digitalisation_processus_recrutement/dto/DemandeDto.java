@@ -24,7 +24,7 @@ public abstract class DemandeDto {
     private boolean attributes;
     private String competencesTechniques;
     private String competencesManageriales;
-
+    private String Statut;
     private LocalDateTime dateDeCreation;
     private LocalDateTime dateDeModification;
 }
