@@ -11,6 +11,6 @@ import java.util.UUID;
 @Repository
 @EnableJpaRepositories
 public interface ListRHRepository extends JpaRepository<ListRH, UUID>{
-    static ListRH findByMatricule(String matricule);
+     ListRH findByMatricule(String matricule);
 
 }

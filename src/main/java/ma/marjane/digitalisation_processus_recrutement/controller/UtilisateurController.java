@@ -1,22 +1,18 @@
 package ma.marjane.digitalisation_processus_recrutement.controller;
 
 
-import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
+
 import ma.marjane.digitalisation_processus_recrutement.dto.UtilisateurDto;
 import ma.marjane.digitalisation_processus_recrutement.entity.ListRH;
 import ma.marjane.digitalisation_processus_recrutement.entity.Utilisateur;
+import ma.marjane.digitalisation_processus_recrutement.mapper.impl.UtilisateurMapperImpl;
 import ma.marjane.digitalisation_processus_recrutement.repository.ListRHRepository;
 import ma.marjane.digitalisation_processus_recrutement.repository.UtilisateurRepository;
 import ma.marjane.digitalisation_processus_recrutement.service.impl.UtilisateurServiceImp;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+
 
 @RestController
 @RequestMapping("/login")
@@ -24,8 +20,14 @@ public class UtilisateurController {
 
     @Autowired
     private UtilisateurServiceImp utilisateurService;
+
+    @Autowired
+    private ListRHRepository ListRHRepository;
+
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+    @Autowired
+    private UtilisateurMapperImpl utilisateurMapper;
 
     @PostMapping("/authenticate")
     public UtilisateurDto authenticate(@RequestParam String mail) throws Exception {
@@ -42,10 +44,17 @@ public class UtilisateurController {
         return utilisateurDTO;
     }
 
-    @GetMapping("demandeur/{matricule}")
-    public ResponseEntity<Utilisateur> getDemandeur(@PathVariable String matricule) {
-        return utilisateurRepository.findByMatricule(matricule) != null ? ResponseEntity.ok(utilisateurRepository.findByMatricule(matricule)) : ResponseEntity.notFound().build();
+//    @PostMapping("/demandeur/{matricule}")
+//    public UtilisateurDto getDemandeur(@PathVariable String matricule){
+//        return utilisateurService.getDemandeur(matricule);
+//
+//    }
+    @GetMapping("/Demandeur/{matricule}")
+    public UtilisateurDto getdemandeur(@PathVariable String matricule) {
+        Utilisateur utilisateur =utilisateurRepository.findByMatricule(matricule);
+        return utilisateurMapper.convertToDto(utilisateur);
     }
+
 
 }
 

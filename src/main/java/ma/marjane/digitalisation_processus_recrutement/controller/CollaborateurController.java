@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("collaborateur")
+@RequestMapping("/collaborateur")
 @RequiredArgsConstructor
 public class CollaborateurController {
 

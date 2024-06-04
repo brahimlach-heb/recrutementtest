@@ -272,6 +272,7 @@ public class HierarchieService {
         List<Hierarchie> hierarchies = hierarchieRepository.findByDemandeId(demandeId);
         return hierarchies.stream()
                 .map(hierarchieMapper::convertToDto)
+                .sorted(Comparator.comparing(HierarchieDTO::getDatedecreation))
                 .collect(Collectors.toList());
     }
 
@@ -289,6 +290,12 @@ public class HierarchieService {
                     collaborateurs.add(collaborateur.get());
                 }
             });
+            hierarchies = hierarchieRepository.findByMatriculeAndStatut(matricule,"Valider");
+            hierarchies.forEach(hierarchie -> {
+                Optional<Collaborateur> collaborateur = collaborateurRepository.findById(hierarchie.getDemandeId());
+                collaborateurs.add(collaborateur.get());
+            });
+
             return collaborateurs;
         }else{
         hierarchies.forEach(hierarchie -> {
@@ -298,5 +305,13 @@ public class HierarchieService {
             }
         });}
         return collaborateurs;
+    }
+
+    public List<HierarchieDTO> getAllDemandes() {
+        List<Hierarchie> hierarchies = hierarchieRepository.findAll();
+        return hierarchies.stream()
+                .map(hierarchieMapper::convertToDto)
+                .sorted(Comparator.comparing(HierarchieDTO::getDatedecreation))
+                .collect(Collectors.toList());
     }
 }

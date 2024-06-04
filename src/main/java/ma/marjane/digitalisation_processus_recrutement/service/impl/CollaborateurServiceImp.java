@@ -50,6 +50,7 @@ public class CollaborateurServiceImp implements CollaborateurService {
             else if(!collaborateur1.isAttributes())
                 return collaborateurMapper.convertToDto(collaborateur1);
         }
+        collaborateur.setStatut("En cours");
         collaborateur=collaborateurRepository.save(collaborateur);
         System.out.println("collaborateur.getId() = " + collaborateur.getId());
         System.out.println("collaborateur.getId() = " + collaborateur.isAttributes());
@@ -63,6 +64,7 @@ public class CollaborateurServiceImp implements CollaborateurService {
                 .datedecreation(new Date())
                 .statut("En cours")
                 .build());
+            collaborateur.setStatut("En cours");
             collaborateurRepository.save(collaborateur);
         }
         else if (utilisateur.getMatricule().equals(utilisateur.getComex())){
@@ -74,6 +76,7 @@ public class CollaborateurServiceImp implements CollaborateurService {
                     .datedecreation(new Date())
                     .statut("En cours")
                     .build());
+            collaborateur.setStatut("En cours");
             collaborateurRepository.save(collaborateur);
         }
 

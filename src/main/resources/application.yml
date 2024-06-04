@@ -1,39 +1,40 @@
+#spring:
+#  jpa:
+#    hibernate:
+#      ddl-auto: update
+#    show-sql: true
+#    properties:
+#      hibernate:
+#        dialect: org.hibernate.dialect.MariaDBDialect
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/hrrecrutement?createDatabaseIfNotExist=true&useSSL=false
+#    username: root
+#    password:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+
 spring:
+  application:
+    name: Digitalisation_Processus_Recrutement
+  datasource:
+    url: jdbc:sqlserver://192.168.99.245:1433;encrypt=true;trustServerCertificate=true;databaseName=HRRecrutement  # URL pour la base de données SQL Server  # Mettez à jour l'URL avec les informations de votre base de données SQL Server
+    username: userhr
+    password: GhTQkNEYjM
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver  # Utilisez le pilote JDBC SQL Server
   jpa:
     hibernate:
-      ddl-auto: update
-    show-sql: true
+      ddl-auto: update  # Conservez vos paramètres existants
+    show-sql: true  # Conservez vos paramètres existants
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MariaDBDialect
-  datasource:
-    url: jdbc:mysql://localhost:3306/hrrecrutement?createDatabaseIfNotExist=true&useSSL=false
-    username: root
-    password:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
-  #spring:
-  #  application:
-  #    name: Digitalisation_Processus_Recrutement
-  #  datasource:
-  #    url: jdbc:sqlserver://alias_sql_prd.cofarma.co.ma:1433;encrypt=true;trustServerCertificate=true;databaseName=HRRecrutement  # URL pour la base de données SQL Server  # Mettez à jour l'URL avec les informations de votre base de données SQL Server
-  #    username: userhr
-  #    password: GhTQkNEYjM
-  #    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver  # Utilisez le pilote JDBC SQL Server
-  #  jpa:
-  #    hibernate:
-  #      ddl-auto: update  # Conservez vos paramètres existants
-  #    show-sql: true  # Conservez vos paramètres existants
-  #    properties:
-  #      hibernate:
-  #        format_sql: true  # Conservez vos paramètres existants
-  #    database: sql_server  # Mettez à jour le type de base de données en SQL Server
-  #    database-platform: org.hibernate.dialect.SQLServerDialect  # Utilisez le dialecte SQL Server
+        format_sql: true  # Conservez vos paramètres existants
+    database: sql_server  # Mettez à jour le type de base de données en SQL Server
+    database-platform: org.hibernate.dialect.SQLServerDialect  # Utilisez le dialecte SQL Server
   profiles:
     active: dev
   servlet:
     multipart:
       max-file-size: 50MB
+
 springdoc:
   default-produces-media-type: application/json
 
@@ -41,3 +42,4 @@ server:
   servlet:
     context-path: /api/v1/
   port: 8080
+

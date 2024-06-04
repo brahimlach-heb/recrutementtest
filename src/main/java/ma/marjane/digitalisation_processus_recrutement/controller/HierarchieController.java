@@ -2,11 +2,13 @@ package ma.marjane.digitalisation_processus_recrutement.controller;
 
 import ma.marjane.digitalisation_processus_recrutement.dto.HierarchieDTO;
 import ma.marjane.digitalisation_processus_recrutement.entity.Collaborateur;
+import ma.marjane.digitalisation_processus_recrutement.repository.CollaborateurRepository;
 import ma.marjane.digitalisation_processus_recrutement.service.impl.HierarchieService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -15,6 +17,8 @@ import java.util.UUID;
 public class HierarchieController {
     @Autowired
     private HierarchieService hierarchieService;
+    @Autowired
+    private CollaborateurRepository collaborateurRepository;
 
     @GetMapping
     public List<HierarchieDTO> getAllHierarchies() {
@@ -66,6 +70,14 @@ public class HierarchieController {
         return hierarchieService.getHierarchieByDemandeId(demandeId);
     }
 
-
+    @GetMapping("/Hierarchie/allDemandes")
+    public List<Collaborateur> getAllDemandes() {
+        List<HierarchieDTO> hierarchieDTOS = hierarchieService.getAllDemandes();
+        List<Collaborateur> collaborateurs = new ArrayList<>();
+        hierarchieDTOS.forEach(hierarchieDTO -> {
+            collaborateurs.add(collaborateurRepository.findById(hierarchieDTO.getId()).get());
+        });
+        return collaborateurs;
+    }
 
 }

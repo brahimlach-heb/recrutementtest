@@ -35,5 +35,6 @@ public class CollaborateurDto extends DemandeDto {
     private String typeContrat;
     private String categorie;
     private String typeRecrutement;
+    private String societe;
 
 }

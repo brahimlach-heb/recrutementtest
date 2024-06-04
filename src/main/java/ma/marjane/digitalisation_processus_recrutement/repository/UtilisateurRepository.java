@@ -14,5 +14,7 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, String
     Utilisateur findByMatricule(String matricule);
     @Query("SELECT DISTINCT u.societe FROM Utilisateur u where u.societe is not null")
     List<String> findAllBySociete();
+
+
 }
 

@@ -60,5 +60,8 @@ public class Collaborateur extends Demande {
     @Column(name = "type_recruitment")
     private String typeRecrutement; // Type de recrutement
 
+    @Column(name ="societe")
+    private String societe;
+
 
 }
