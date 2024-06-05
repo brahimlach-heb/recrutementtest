@@ -79,5 +79,14 @@ public class HierarchieController {
         });
         return collaborateurs;
     }
+    @GetMapping("/Hierarchie/demandeestvalide")
+    public ResponseEntity<Boolean> demandeestvalide(@RequestParam UUID demandeId, @RequestParam String matricule) {
+        boolean isValid = hierarchieService.demandestvalider(matricule, demandeId);
+        if (isValid) {
+            return ResponseEntity.ok(true);
+        } else {
+            return ResponseEntity.status(404).body(false);
+        }
+    }
 
 }

@@ -25,7 +25,12 @@ public class ListSocieteController {
     }
 
     @GetMapping("/listeDirection")
-    public List<String> listDirection(@RequestParam String societe, @RequestParam String fonction) {
-      return null;
+    public List<String> listDirection( @RequestParam String fonction) {
+        if (fonction.equals("fonctioncentral"))
+            return fonctionCentralRepository.findLibelleByFc(true);
+        else if (fonction.equals("siege"))
+            return fonctionCentralRepository.findLibelleByFc(false);
+        else
+            return fonctionCentralRepository.findAllNotInFc();
     }
 }

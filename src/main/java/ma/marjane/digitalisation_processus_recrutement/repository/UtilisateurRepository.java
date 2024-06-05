@@ -16,5 +16,6 @@ public interface UtilisateurRepository extends JpaRepository<Utilisateur, String
     List<String> findAllBySociete();
 
 
+
 }
 

@@ -314,4 +314,15 @@ public class HierarchieService {
                 .sorted(Comparator.comparing(HierarchieDTO::getDatedecreation))
                 .collect(Collectors.toList());
     }
+
+    public boolean demandestvalider(String matricule, UUID demandeId) {
+        List<Hierarchie> hierarchies = hierarchieRepository.findByDemandeIdAndMatricule(demandeId, matricule);
+        for (Hierarchie hierarchie : hierarchies) {
+            if (hierarchie.getMatricule().equals(matricule) && hierarchie.getStatut().equals("valider")) {
+                return true;
+            }
+        }
+        return false;
+
+    }
 }

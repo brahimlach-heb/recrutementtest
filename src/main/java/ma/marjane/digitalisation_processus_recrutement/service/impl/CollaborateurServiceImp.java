@@ -58,6 +58,14 @@ public class CollaborateurServiceImp implements CollaborateurService {
         Utilisateur manager1= utilisateurRepository.findByMatricule(utilisateur.getManager1());
         collaborateur.getHierarchies().add(Hierarchie.builder()
                 .demandeId(collaborateur.getId())
+                .matricule(utilisateur.getMatricule())
+                .nom(utilisateur.getNom())
+                .prenom(utilisateur.getPrenom())
+                .datedecreation(new Date())
+                .statut("valider")
+                .build());
+        collaborateur.getHierarchies().add(Hierarchie.builder()
+                .demandeId(collaborateur.getId())
                 .matricule(manager1.getMatricule())
                 .nom(manager1.getNom())
                 .prenom(manager1.getPrenom())
