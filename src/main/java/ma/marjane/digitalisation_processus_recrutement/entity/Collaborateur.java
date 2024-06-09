@@ -6,8 +6,10 @@ import jakarta.persistence.EntityListeners;
 import lombok.*;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-@Getter
-@Setter
+import java.util.Optional;
+
+
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,19 +19,12 @@ public class Collaborateur extends Demande {
 
     private String natureDeRecrutement;
 
-    @Column(name = "creation_reason")
-    private String motifCreation;
 
     @Column(name = "position_budgeted")
     private Boolean posteBudgete;
 
-    @Column(name = "estimated_budget")
-    private Number budgetEstime;
-
-    private String collaborateurARemplacer;
-
     @Column(name = "departure_reason")
-    private String motifDepart;
+    private String motif;
 
     @Column(name = "functional_supervisor")
     private String superviseurFonctionnel; // Supérieur fonctionnel
@@ -44,12 +39,8 @@ public class Collaborateur extends Demande {
     private String missionGlobale; // Mission globale
     @Column(name = "principales_activités", length = 1024)
     private String principalesActivites; // Principales activités
-    private String formation;
-    private String experience;
-    private String competenceTechnique;
-    private String competenceManagerial;
-    private String indicateursQuantitatifs; // Indicateurs quantitatifs
-    private String indicateursQualitatifs; // Indicateurs qualitatifs
+
+    private String indicateurs; // Indicateurs quantitatifs
 
     @Column(name = "contract_type")
     private String typeContrat; // Type de contrat
@@ -57,11 +48,21 @@ public class Collaborateur extends Demande {
     @Column(name = "Catégorie")
     private String categorie; // Catégorie
 
-    @Column(name = "type_recruitment")
+    @Column(name = "typeRecrutement")
     private String typeRecrutement; // Type de recrutement
 
     @Column(name ="societe")
     private String societe;
+
+    @Column(name ="directionoumagasin")
+    private String directionoumagasin;
+
+    @Column(name ="sous_direction")
+    private String sousDirection;
+
+    @Column(name ="niveaudetude")
+    private String niveauDetude;
+
 
 
 }

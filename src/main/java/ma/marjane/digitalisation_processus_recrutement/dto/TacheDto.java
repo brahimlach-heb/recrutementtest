@@ -1,25 +1,19 @@
 package ma.marjane.digitalisation_processus_recrutement.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class TacheDto {
 
-    private String objet;
-    private String description;
-    private String idDemande;
-    private String idUtilisateur;
 
-    private LocalDateTime dateDeCreation;
-    private LocalDateTime dateDeModification;
+    private UUID id;  // Utilisation d'un UUID pour l'ID si vous ne fournissez pas de spécifications de type de données spécifiques pour l'ID.
+    private String etape;
+    private LocalDateTime dateDeDebut;
+
 
 }

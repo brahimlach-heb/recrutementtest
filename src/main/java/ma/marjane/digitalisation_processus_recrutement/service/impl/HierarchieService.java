@@ -3,18 +3,13 @@ package ma.marjane.digitalisation_processus_recrutement.service.impl;
 import jdk.jshell.execution.Util;
 import ma.marjane.digitalisation_processus_recrutement.dto.CollaborateurDto;
 import ma.marjane.digitalisation_processus_recrutement.dto.HierarchieDTO;
-import ma.marjane.digitalisation_processus_recrutement.entity.Collaborateur;
-import ma.marjane.digitalisation_processus_recrutement.entity.Hierarchie;
-import ma.marjane.digitalisation_processus_recrutement.entity.ListRH;
-import ma.marjane.digitalisation_processus_recrutement.entity.Utilisateur;
+import ma.marjane.digitalisation_processus_recrutement.entity.*;
 import ma.marjane.digitalisation_processus_recrutement.mapper.impl.HierarchieMapper;
-import ma.marjane.digitalisation_processus_recrutement.repository.CollaborateurRepository;
-import ma.marjane.digitalisation_processus_recrutement.repository.HierarchieRepository;
-import ma.marjane.digitalisation_processus_recrutement.repository.ListRHRepository;
-import ma.marjane.digitalisation_processus_recrutement.repository.UtilisateurRepository;
+import ma.marjane.digitalisation_processus_recrutement.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -31,8 +26,13 @@ public class HierarchieService {
 
     @Autowired
     private UtilisateurRepository utilisateurRepository;
+
     @Autowired
     private ListRHRepository listRHRepository;
+
+    @Autowired
+    private TacheRepository tacheRepository;
+
 
     public List<HierarchieDTO> getAllHierarchies() {
         List<Hierarchie> hierarchies = hierarchieRepository.findAll();
@@ -50,6 +50,7 @@ public class HierarchieService {
     }
     public boolean validerdemande(UUID demandeId, String matricule) {
         List<Hierarchie> hierarchies = hierarchieRepository.findByDemandeId(demandeId);
+        ListRH listRH = listRHRepository.findByMatricule(matricule);
         Collaborateur collaborateur = collaborateurRepository.findById(demandeId).get();
         Utilisateur utilisateur = utilisateurRepository.findByMatricule(collaborateur.getMatricule());
         if (utilisateur == null) {
@@ -61,7 +62,6 @@ public class HierarchieService {
         }else if (hierarchies.get(hierarchies.size() - 1).getMatricule().equals(utilisateur.getMatricule()) && !utilisateur.getMatricule().equals(utilisateur.getComex())) {
             // Handle the case where the hierarchy has more than two elements
             Utilisateur manager1 = utilisateurRepository.findByMatricule(utilisateur.getManager1());
-
             hierarchies.get(hierarchies.size() - 1).setStatut("valider");
             hierarchieRepository.save(hierarchies.get(hierarchies.size() - 1));
             if (manager1 != null) {
@@ -80,7 +80,7 @@ public class HierarchieService {
             return true;
         }
         for (Hierarchie hierarchie : hierarchies) {
-            if (utilisateur.getMatricule().equals((utilisateur.getComex())) && hierarchie.getStatut().equals("En cours")) {
+            if (utilisateur.getMatricule().equals((utilisateur.getComex())) && hierarchie.getStatut().equals("En cours") && listRHRepository.findByMatricule(matricule) == null){
                 hierarchie.setStatut("valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
                 hierarchieRepository.save(hierarchie);
@@ -114,10 +114,17 @@ public class HierarchieService {
                     return true;
                 }
             } else
-            if (utilisateur.getMail().equals("labarar@marjane.ma") && hierarchie.getStatut().equals("En cours") && hierarchie.getMatricule().equals(matricule)){
+            if (utilisateur.getMail().equals(listRH.getMail()) && hierarchie.getStatut().equals("En cours") && hierarchie.getMatricule().equals(matricule)){
                 hierarchie.setStatut("valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
+                Tache tache = Tache.builder()
+                        .demandeId(demandeId)
+                        .etape("Ajouter Cvs")
+                        .dateDeDebut(LocalDateTime.now())
+                        .build();
                 hierarchieRepository.save(hierarchie);
+                tacheRepository.save(tache);
+
                 return true;
             } else if (hierarchie.getStatut().equals("En cours") && utilisateur.getManager1().equals(matricule)) {
                 hierarchie.setStatut("Valider");
@@ -188,14 +195,20 @@ public class HierarchieService {
                 return true;
             }
             else if (hierarchie.getStatut().equals("En cours") && listRHRepository.findByMatricule(matricule) != null){
-                ListRH listRH = listRHRepository.findByMatricule(matricule);
+                listRH = listRHRepository.findByMatricule(matricule);
                 hierarchie.setDemandeId(demandeId);
                 hierarchie.setMatricule(listRH.getMatricule());
                 hierarchie.setNom(listRH.getNom());
                 hierarchie.setPrenom(listRH.getPrenom());
                 hierarchie.setStatut("Valider");
                 hierarchie.setDatedecreation(new Date());  // Assuming setDatedecreation accepts a Date object
+                Tache tache = Tache.builder()
+                        .demandeId(demandeId)
+                        .etape("Ajouter Cvs")
+                        .dateDeDebut(LocalDateTime.now())
+                        .build();
                 hierarchieRepository.save(hierarchie);
+                tacheRepository.save(tache);
                 return true;
             }
         }

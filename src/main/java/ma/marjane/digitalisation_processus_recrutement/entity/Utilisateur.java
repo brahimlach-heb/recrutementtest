@@ -18,13 +18,14 @@ public class Utilisateur {
     private String nom;
     private String prenom;
     private String societe;
-    private String codeEtablissement;
+    private String code_Etablissement;
     private String etablissement;
-    private String codeEmploi;
+    private String code_Emploi;
     private String emploi;
-    private String codeUo;
+    private String code_uo;
     private String uo;
     private String mail;
+    private String code_direction;
     private String direction;
     private String manager1;
     private String manager2;

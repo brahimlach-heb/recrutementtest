@@ -4,16 +4,18 @@ import lombok.RequiredArgsConstructor;
 import ma.marjane.digitalisation_processus_recrutement.dto.CollaborateurDto;
 import ma.marjane.digitalisation_processus_recrutement.entity.Collaborateur;
 import ma.marjane.digitalisation_processus_recrutement.entity.Hierarchie;
+import ma.marjane.digitalisation_processus_recrutement.entity.Tache;
 import ma.marjane.digitalisation_processus_recrutement.entity.Utilisateur;
 import ma.marjane.digitalisation_processus_recrutement.mapper.impl.CollaborateurMapperImpl;
 import ma.marjane.digitalisation_processus_recrutement.repository.CollaborateurRepository;
+import ma.marjane.digitalisation_processus_recrutement.repository.TacheRepository;
 import ma.marjane.digitalisation_processus_recrutement.repository.UtilisateurRepository;
 import ma.marjane.digitalisation_processus_recrutement.service.CollaborateurService;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Service
@@ -24,6 +26,7 @@ public class CollaborateurServiceImp implements CollaborateurService {
     private final CollaborateurRepository collaborateurRepository;
     private final CollaborateurMapperImpl collaborateurMapper;
     private final UtilisateurRepository utilisateurRepository;
+
 
     public List<CollaborateurDto> findAll() {
         return collaborateurRepository.findByAttributes(true).stream().map(collaborateurMapper::convertToDto).toList();
@@ -36,6 +39,12 @@ public class CollaborateurServiceImp implements CollaborateurService {
 
     public CollaborateurDto save(CollaborateurDto collaborateurDto) {
         Collaborateur collaborateur = collaborateurMapper.convertToEntity(collaborateurDto);
+        collaborateur.setDateDeCreation(LocalDateTime.now());
+        collaborateur.getTaches().add(Tache.builder()
+                .demandeId(collaborateur.getId())
+                .etape("Validation")
+                .dateDeDebut(LocalDateTime.now())
+                .build());
         List<Collaborateur> collaborateurs = collaborateurRepository.findByMatricule(collaborateurDto.getMatricule());
 
         Utilisateur utilisateur= utilisateurRepository.findByMatricule(collaborateurDto.getMatricule());

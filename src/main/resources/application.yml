@@ -12,6 +12,7 @@ spring:
     password:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
+#
 #spring:
 #  application:
 #    name: Digitalisation_Processus_Recrutement
@@ -42,4 +43,8 @@ server:
   servlet:
     context-path: /api/v1/
   port: 8080
+
+upload:
+  dir: ./uploads
+
 

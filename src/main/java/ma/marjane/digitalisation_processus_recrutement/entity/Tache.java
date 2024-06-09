@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,14 +27,9 @@ public class Tache {
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
-    private LocalDateTime dateDeCreation;
+    private LocalDateTime dateDeDebut;
 
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime dateDeModification;
-
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime datefin;
+    @Column(name = "demande_id", nullable = false)
+    private UUID demandeId;  // Référence à la demande associée
 
 }

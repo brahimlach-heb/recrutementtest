@@ -1,7 +1,9 @@
 package ma.marjane.digitalisation_processus_recrutement.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
+import ma.marjane.digitalisation_processus_recrutement.enumeration.StatutSelection;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,8 +12,7 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.UUID;
 
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -25,20 +26,20 @@ public class Candidate {
     @Column(name = "id", updatable = false, nullable = false, columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "request_id")
-    private String requestId;
+    private String nom;
+    private String prenom;
+    private String email;
+    private String telephone;
 
-    @Column(name = "createur")
-    private String createur;
+    private String cvPath;
 
-    @Column(name = "cv")
-    private String cv;
+    private String commentaire;
 
-    @CreatedDate
-    @Column(nullable = false, updatable = false)
-    private LocalDateTime dateDeCreation;
+    @ManyToOne
+    @JoinColumn(name = "demande_id")
+    @JsonBackReference // Indique que cette entité est la partie "back" de la relation
+    private Demande demande;
 
-    @LastModifiedDate
-    @Column(insertable = false)
-    private LocalDateTime dateDeModification;
+    @Enumerated(EnumType.STRING)
+    private StatutSelection statutSelection; // Nouvelle propriété pour l'état de sélection
 }

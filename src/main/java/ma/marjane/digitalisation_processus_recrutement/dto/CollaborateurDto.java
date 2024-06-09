@@ -15,26 +15,21 @@ import lombok.Setter;
 public class CollaborateurDto extends DemandeDto {
 
     private String natureDeRecrutement;
-    private String motifCreation;
     private Boolean posteBudgete;
-    private Number budgetEstime;
-    private String collaborateurARemplacer;
-    private String motifDepart;
+    private String motif;
     private String superviseurFonctionnel;
     private String relationsHierarchiques;
     private String relationsFonctionnelles;
     private String relationsExterne;
     private String missionGlobale;
     private String principalesActivites;
-    private String formation;
-    private String experience;
-    private String competenceTechnique;
-    private String competenceManagerial;
-    private String indicateursQuantitatifs;
-    private String indicateursQualitatifs;
+    private String indicateurs;
     private String typeContrat;
     private String categorie;
     private String typeRecrutement;
     private String societe;
+    private String directionoumagasin;
+    private String sousDirection;
+    private String niveauDetude;
 
 }
